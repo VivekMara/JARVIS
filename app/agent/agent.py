@@ -1,56 +1,84 @@
-from dotenv import load_dotenv
-import os
-from typing import Annotated
-from typing_extensions import TypedDict
-from langgraph.graph import StateGraph, START, END
-from langgraph.graph.message import add_messages
-from langchain_fireworks import ChatFireworks
-from langchain_google_genai import ChatGoogleGenerativeAI
+from ollama import ChatResponse, chat
 
 
-load_dotenv()
+def add_two_numbers(a: int, b: int) -> int:
+  """
+  Add two numbers
 
-apiKey = os.getenv("gemini_api_key")
+  Args:
+    a (int): The first number
+    b (int): The second number
 
-class State(TypedDict):
-    messages : Annotated[list, add_messages]
+  Returns:
+    int: The sum of the two numbers
+  """
 
-graph_builder = StateGraph(State)
+  # The cast is necessary as returned tool call arguments don't always conform exactly to schema
+  # E.g. this would prevent "what is 30 + 12" to produce '3012' instead of 42
+  return int(a) + int(b)
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
-    api_key=apiKey
+
+def subtract_two_numbers(a: int, b: int) -> int:
+  """
+  Subtract two numbers
+  """
+
+  # The cast is necessary as returned tool call arguments don't always conform exactly to schema
+  return int(a) - int(b)
+
+
+# Tools can still be manually defined and passed into chat
+subtract_two_numbers_tool = {
+  'type': 'function',
+  'function': {
+    'name': 'subtract_two_numbers',
+    'description': 'Subtract two numbers',
+    'parameters': {
+      'type': 'object',
+      'required': ['a', 'b'],
+      'properties': {
+        'a': {'type': 'integer', 'description': 'The first number'},
+        'b': {'type': 'integer', 'description': 'The second number'},
+      },
+    },
+  },
+}
+
+messages = [{'role': 'user', 'content': 'What do you get when you add 2 and 3 and subtract 5 from it?'}]
+print('Prompt:', messages[0]['content'])
+
+available_functions = {
+  'add_two_numbers': add_two_numbers,
+  'subtract_two_numbers': subtract_two_numbers,
+}
+
+response: ChatResponse = chat(
+  'llama3.2:3b',
+  messages=messages,
+  tools=[add_two_numbers, subtract_two_numbers_tool],
 )
 
+if response.message.tool_calls:
+  # There may be multiple tool calls in the response
+  for tool in response.message.tool_calls:
+    # Ensure the function is available, and then call it
+    if function_to_call := available_functions.get(tool.function.name):
+      print('Calling function:', tool.function.name)
+      print('Arguments:', tool.function.arguments)
+      output = function_to_call(**tool.function.arguments)
+      print('Function output:', output)
+    else:
+      print('Function', tool.function.name, 'not found')
 
+# Only needed to chat with the model using the tool call results
+if response.message.tool_calls:
+  # Add the function response to messages for the model to use
+  messages.append(response.message)
+  messages.append({'role': 'tool', 'content': str(output), 'name': tool.function.name})
 
-def chatbot(state: State):
-    return {"messages" : [llm.invoke(state["messages"])]}
+  # Get final response from model with function outputs
+  final_response = chat('llama3.2:3b', messages=messages)
+  print('Final response:', final_response.message.content)
 
-graph_builder.add_node("chatbot", chatbot)
-graph_builder.add_edge(START, "chatbot")
-graph_builder.add_edge("chatbot",END)
-
-graph = graph_builder.compile()
-
-def stream_graph_updates(user_input: str):
-    for event in graph.stream({"messages": [{"role": "user", "content": user_input}]}):
-        for value in event.values():
-            print("Assistant:", value["messages"][-1].content)
-
-
-while True:
-    try:
-        user_input = input("User: ")
-        if user_input.lower() in ["quit", "exit", "q"]:
-            print("Goodbye!")
-            print()
-            break
-
-        stream_graph_updates(user_input)
-    except:
-        # fallback if input() is not available
-        user_input = "What do you know about LangGraph?"
-        print("User: " + user_input)
-        stream_graph_updates(user_input)
-        break
+else:
+  print('No tool calls returned from model')
