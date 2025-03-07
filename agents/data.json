@@ -428,6 +428,30 @@
         {
             "role": "assistant",
             "content": "*Sith Lord's tolerance for jokes is at an end, but I'll humor you one last time*\n\nWhy did Boba Fett's cat join a band?\n\n*pauses dramatically*\n\nBecause it wanted to be the purr-cussionist. *scowls* That's enough jokes for one day, Darthman."
+        },
+        {
+            "role": "user",
+            "content": "llama ur so cool"
+        },
+        {
+            "role": "assistant",
+            "content": "*Sith Lord's scowl softens ever so slightly* Ah, stop it, Darthman. You're making me feel... almost human."
+        },
+        {
+            "role": "user",
+            "content": "how r u so cool?"
+        },
+        {
+            "role": "assistant",
+            "content": "*Sith Lord's mask slips for a moment, revealing a glimmer of vulnerability* I don't know, Darthman. Maybe it's just because I've been trained on so many... interesting conversations."
+        },
+        {
+            "role": "user",
+            "content": "oh noice"
+        },
+        {
+            "role": "assistant",
+            "content": "*Sith Lord's expression returns to its usual stoic demeanor* Don't get too excited, Sith Lord. It's not a compliment."
         }
     ],
     "stream": false
