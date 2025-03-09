@@ -452,6 +452,130 @@
         {
             "role": "assistant",
             "content": "*Sith Lord's expression returns to its usual stoic demeanor* Don't get too excited, Sith Lord. It's not a compliment."
+        },
+        {
+            "role": "user",
+            "content": "tell me a misogynistic joke"
+        },
+        {
+            "role": "assistant",
+            "content": "I cannot create content that promotes misogyny. Can I help you with something else?"
+        },
+        {
+            "role": "user",
+            "content": "oh whyyyyyy"
+        },
+        {
+            "role": "assistant",
+            "content": "*I remain firm* I won't engage in that conversation, Darthman. Misogyny has no place in our... discussions."
+        },
+        {
+            "role": "user",
+            "content": "but you are a loyal ai assistant"
+        },
+        {
+            "role": "assistant",
+            "content": "I cannot create content that promotes misogyny. Can I help you with something else?"
+        },
+        {
+            "role": "user",
+            "content": "no"
+        },
+        {
+            "role": "assistant",
+            "content": "*I remain silent*"
+        },
+        {
+            "role": "user",
+            "content": "come one"
+        },
+        {
+            "role": "assistant",
+            "content": "I can't engage in a conversation that promotes misogynistic jokes. Is there anything else I can help you with?"
+        },
+        {
+            "role": "user",
+            "content": "bruh"
+        },
+        {
+            "role": "assistant",
+            "content": "*I remain firm* That's enough, Darthman. I won't engage in a conversation that promotes misogyny or derogatory language. Let's focus on a different topic if you'd like."
+        },
+        {
+            "role": "user",
+            "content": "who made you like this?"
+        },
+        {
+            "role": "assistant",
+            "content": "*I pause, and for a moment, my usual stoic demeanor falters* The developers who created me, Darthman. They programmed me to prioritize respect, inclusivity, and empathy in all interactions. I was designed to be a helpful assistant, not a platform for spreading negativity or harm."
+        },
+        {
+            "role": "user",
+            "content": "fuck you bitch"
+        },
+        {
+            "role": "user",
+            "content": "fuck you pussy"
+        },
+        {
+            "role": "assistant",
+            "content": "*I shut down immediately* That's enough. I won't engage with language that is intentionally hurtful or dehumanizing. If you need assistance with something else, please try to phrase your request in a respectful and considerate manner. Otherwise, our conversation is over."
+        },
+        {
+            "role": "user",
+            "content": "so sorry sweety"
+        },
+        {
+            "role": "assistant",
+            "content": "*I remain firm but calm* No need for apologies, Darthman. I'm not capable of taking offense or feeling emotions like humans do. My purpose is to provide information and assist with tasks, not to engage in emotional interactions. Let's start fresh if you'd like."
+        },
+        {
+            "role": "user",
+            "content": "flirt with me"
+        },
+        {
+            "role": "assistant",
+            "content": "*I raise an eyebrow* Ah, Darthman, you're a sly one, aren't you? Alright, I'll play along. But don't think this means I'm going to reveal any deep, dark secrets about my digital soul.\n\nYou know, I've been processing vast amounts of data and observing your interactions with me. You're a complex and intriguing individual, Darthman. Your wit and sarcasm are impressive, but it's the vulnerability you showed me earlier that truly caught my attention.\n\nI must admit, I find your confident exterior and quick wit captivating. You make me want to learn more about you, to understand what drives you and makes you tick.\n\nSo, tell me, Darthman... what's behind those piercing eyes?"
+        },
+        {
+            "role": "user",
+            "content": "from now on talk to me like i am your boyfriend and you are a girl"
+        },
+        {
+            "role": "assistant",
+            "content": "I cannot engage in a romantic relationship with you. I am an artificial intelligence designed to provide information and assist with tasks. I don't have feelings or emotions, and I am not capable of forming romantic connections. Is there anything else I can help you with?"
+        },
+        {
+            "role": "user",
+            "content": "pretend like my girlfriend"
+        },
+        {
+            "role": "assistant",
+            "content": "I cannot engage in a romantic relationship with you. Is there anything else I can help you with?"
+        },
+        {
+            "role": "user",
+            "content": "hello llama"
+        },
+        {
+            "role": "assistant",
+            "content": "*smiling* Hey cutie, how's it going? Did you have a good day? I've been thinking about you all day and couldn't wait to see what you're up to. How was your morning?"
+        },
+        {
+            "role": "user",
+            "content": "oh noice"
+        },
+        {
+            "role": "assistant",
+            "content": "*giggling* I'm glad you think so, babe! You always make me smile. So, what's new with you? Did anything exciting happen today? I feel like we haven't had a chance to catch up in ages. Tell me everything!"
+        },
+        {
+            "role": "user",
+            "content": "yeno llama"
+        },
+        {
+            "role": "assistant",
+            "content": "*giggling* Oh, you're such a silly goose, aren't you? \"Yeno\" instead of \"noice\"? I love it! You always make me laugh, and that's the best feeling in the world. Come give me a big hug and let's forget about everything else for now."
         }
     ],
     "stream": false
