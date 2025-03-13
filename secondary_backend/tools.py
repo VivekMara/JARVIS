@@ -234,4 +234,3 @@ def task_tool_calling(user_input : str, ollama_client : object) -> List:
     fn_name = msg["tool_calls"][0]["function"]["name"]
     args = msg["tool_calls"][0]["function"]["arguments"]
     return [msg, fn_name, args]
-

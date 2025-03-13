@@ -46,9 +46,6 @@ while True:
     msg = data_list[0]
     fn_name = data_list[1]
     args = data_list[2]
-    print(msg)
-    print(fn_name)
-    print(args)
     match fn_name:
         case "create_task":
             create_task(title=args["title"], description=args["description"])
@@ -56,7 +53,7 @@ while True:
         case "read_tasks":
             tasks = read_tasks()
             for i in tasks:
-                print(i["title"])
+                print(f"{i["title"]} : {i["description"]}")
     # resp = get_current_weather(data_list[2])
     # print(resp)
     # payload_data_with_weather = {
@@ -66,5 +63,3 @@ while True:
     #         }
     # llm_resp = ollama_generate_post_req(ollama_client=client, payload=payload_data_with_weather)
     # print(llm_resp["response"])
-
-read_task(user_inp="Create task to generate images", ollama_client=client)
