@@ -2,3 +2,4 @@ openai
 qdrant-client
 python-dotenv
 fastembed
+sentence-transformers

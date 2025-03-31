@@ -11,34 +11,43 @@ client = QdrantClient(url="http://localhost:6333")
 encoder = SentenceTransformer("all-MiniLM-L6-v2")
 
 def upload_vectors():
-    with open("data.json",'r') as f:
+    with open("user_data.json",'r') as f:
         data = json.load(f)
-    msgs = data['messages']
-    texts_to_embed = [f"{i["role"]} : {i["content"]}" for i in msgs]
-    embeddings = encoder.encode(texts_to_embed)
+    embeddings = encoder.encode(data)
     vector_size = len(embeddings[0])
+
+
     client.create_collection(
-        collection_name="user_data",
+        collection_name="user_data_new",
         vectors_config=models.VectorParams(
             size=vector_size,
             distance=models.Distance.COSINE,
         ),
     )
+
+
     points = []
-    for id, embedding in enumerate(zip(embeddings,msgs)):
-        idx = id
+    count = 0
+    for id, embedding in enumerate(zip(embeddings,data)):
         data = list(embedding)
-        # print(f"ID : {idx}, Embedding : {data[0].tolist()}, payload : {data[1]}" )
+        payload = {}
+        for i, d in enumerate(data[1]):
+            payload[f"{count}"] = d
+            count += 1
+        
+        # print(f"ID : {id}, Embedding : {data[0].tolist()}, payload : {payload}" )
         # print("-------------------------------------------------------------------")
         points.append(
             models.PointStruct(
-                id=idx,
+                id=id,
                 vector=data[0].tolist(),
-                payload=data[1]
+                payload=payload
             )
         )
+
+
     client.upload_points(
-        collection_name="user_data",
+        collection_name="user_data_new",
         points=points
     )
 
@@ -61,7 +70,7 @@ def query_deepseek(prompt):
     print(resp.choices[0].message.content)
 
 
-def rag(question: str, n_points: int = 10) -> str:
+def rag(question: str, n_points: int = 5) -> str:
     resp = deepseek_client.chat.completions.create(
         model="deepseek-chat",
         messages=[
@@ -80,7 +89,7 @@ def rag(question: str, n_points: int = 10) -> str:
     print(keywords)
     print("------------------------------------------------------")
     results = client.query_points(
-        collection_name="user_data",
+        collection_name="user_data_new",
         query=encoder.encode(keywords).tolist(),
         limit=n_points,
     ).points
@@ -108,4 +117,4 @@ def rag(question: str, n_points: int = 10) -> str:
     print(metaprompt)
     return query_deepseek(metaprompt)
 
-rag("does the user love the assistant?")
+rag("where does the user live?")
