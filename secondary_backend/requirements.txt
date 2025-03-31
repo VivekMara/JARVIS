@@ -1,0 +1,4 @@
+openai
+qdrant-client
+python-dotenv
+fastembed
