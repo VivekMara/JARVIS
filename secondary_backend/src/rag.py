@@ -10,6 +10,23 @@ load_dotenv()
 client = QdrantClient(url="http://localhost:6333")
 encoder = SentenceTransformer("all-MiniLM-L6-v2")
 
+
+
+def clean_data():
+    with open("data.json", "r") as f:
+        data = json.load(f)
+    convos = list()
+    convo = list()
+    for i in range(len(data)):
+        if len(convo) > 1:
+            convos.append(convo.copy())
+            convo.clear()
+        else:
+            convo.append(data[i])
+    with open("user_data.json", "w") as ff:
+        json.dump(convos, ff, indent=4)
+
+
 def upload_vectors():
     with open("user_data.json",'r') as f:
         data = json.load(f)
@@ -24,8 +41,6 @@ def upload_vectors():
             distance=models.Distance.COSINE,
         ),
     )
-
-
     points = []
     count = 0
     for id, embedding in enumerate(zip(embeddings,data)):
@@ -44,8 +59,6 @@ def upload_vectors():
                 payload=payload
             )
         )
-
-
     client.upload_points(
         collection_name="user_data_new",
         points=points
