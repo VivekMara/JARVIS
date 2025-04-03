@@ -104,32 +104,12 @@ def wikipedia(q):
     }).json()["query"]["search"][0]["snippet"]
 
 
-def simon_blog_search(q):
-    results = httpx.get("https://datasette.simonwillison.net/simonwillisonblog.json", params={
-        "sql": """
-        select
-          blog_entry.title || ': ' || substr(html_strip_tags(blog_entry.body), 0, 1000) as text,
-          blog_entry.created
-        from
-          blog_entry join blog_entry_fts on blog_entry.rowid = blog_entry_fts.rowid
-        where
-          blog_entry_fts match escape_fts(:q)
-        order by
-          blog_entry_fts.rank
-        limit
-          1""".strip(),
-        "_shape": "array",
-        "q": q,
-    }).json()
-    return results[0]["text"]
-
 def calculate(what):
     return eval(what)
 
 known_actions = {
     "wikipedia": wikipedia,
     "calculate": calculate,
-    "simon_blog_search": simon_blog_search
 }
 
-query("when was hitler born?")
+query("what are the neighbouring countries of india and what is four hundred and twenty multiplied with sixty nine?")
