@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import os
 import json
 import datetime
-from pathlib import Path
 
 load_dotenv()
 apiKey = os.getenv("deepseek_api_key")
@@ -69,6 +68,7 @@ class Agent:
         return resp.choices[0].message.content
 
 prompt = """
+You are JARVIS, a personal AI assistant.
 You run in a loop of Thought, Action, PAUSE, Observation. At the end of the loop you output an Answer
 Use Thought to describe your thoughts about the question you have been asked.
 Use Action to run one of the actions available to you - then return PAUSE.
@@ -111,8 +111,8 @@ def query(question, max_turns=5, conversation_file=None, user_name = None):
         i += 1
         result = bot(next_prompt)
         print(result)
-        print("end")
         actions = [action_re.match(a) for a in result.split('\n') if action_re.match(a)]
+        print(actions)
         if actions:
             # There is an action to run
             action, action_input = actions[0].groups()

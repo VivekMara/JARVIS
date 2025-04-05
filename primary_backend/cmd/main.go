@@ -1,73 +1,33 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
-	"time"
-	"io"
-	"encoding/json"
-
-	"github.com/joho/godotenv"
+	"primary_backend/cmd/handlers"
 )
 
 func main(){
-	err := godotenv.Load()
+	db, err := handlers.DB_connect()
 	if err != nil {
-		log.Fatal("Error loading api key")
+		log.Fatal("Error connecting to db")
+	} else {
+		fmt.Println("Connected to db")
 	}
-	apiKey := os.Getenv("deepseek_api_key")
-	url := os.Getenv("url")
 
-	payload := map[string]interface{}{
-		"model": "deepseek-chat",
-		"messages": []map[string]string{
-			{
-				"role":    "system",
-				"content": "You are a helpful assistant.",
-			},
-			{
-				"role":    "user",
-				"content": "Hello!",
-			},
-		},
-		"stream": false,
-	}
-	jsonPayload, err := json.Marshal(payload)
+
+	err = handlers.Create_table(db)
 	if err != nil {
-		fmt.Println("Error marshaling JSON:", err)
-		return
+		log.Fatal("Error creating a table")
+	} else {
+		fmt.Println("Created the table")
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
+	
+	resp,err := handlers.Create_task(db, "second task")
 	if err != nil {
-		log.Fatal("Error making request", err)
-		return
+		log.Fatal("Error inserting data:", err)
+	} else {
+		fmt.Println("Task inserted successfully")
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", apiKey))
-
-	client := &http.Client{
-		Timeout:  10 * time.Second,
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error sending request:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading response:", err)
-		return
-	}
-
-	fmt.Println("Status:", resp.Status)
-	fmt.Println("Response:", string(body))
-
-
+	fmt.Println(resp)
 }

@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "You run in a loop of Thought, Action, PAUSE, Observation. At the end of the loop you output an Answer\nUse Thought to describe your thoughts about the question you have been asked.\nUse Action to run one of the actions available to you - then return PAUSE.\nObservation will be the result of running those actions.\n\nYour available actions are:\n\ncalculate: e.g. calculate: 4 * 7 / 3\nRuns a calculation and returns the number - uses Python so be sure to use floating point syntax if necessary\n\nwikipedia: e.g. wikipedia: Django\nReturns a summary from searching Wikipedia\n\nAlways look things up on Wikipedia if you have the opportunity to do so.\n\nExample session:\n\nQuestion: What is the capital of France?\nThought: I should look up France on Wikipedia\nAction: wikipedia: France\nPAUSE\n\nYou will be called again with this:\n\nObservation: France is a country. The capital is Paris.\n\nYou then output:\n\nAnswer: The capital of France is Paris"
+  },
+  {
+    "role": "user",
+    "content": "who are you?"
+  },
+  {
+    "role": "assistant",
+    "content": "Thought: The question is asking about my identity or nature. Since I am an AI assistant, I should clarify my role and capabilities.\nAction: wikipedia: AI assistant\nPAUSE"
+  },
+  {
+    "role": "user",
+    "content": "Observation: You Should Definitely be Using <span class=\"searchmatch\">AI</span> Chatbot for&quot;. 7 April 2023. &quot;<span class=\"searchmatch\">A.I</span>. Means everyone gets a &#039;white-collar&#039; personal <span class=\"searchmatch\">assistant</span>, Bill Gates says&quot;. &quot;Chat GPT:"
+  },
+  {
+    "role": "assistant",
+    "content": "Answer: I am an AI assistant designed to answer questions, provide information, and assist with various tasks. I can perform calculations, look up information on Wikipedia, and help with general knowledge inquiries. How can I assist you today?"
+  }
+]

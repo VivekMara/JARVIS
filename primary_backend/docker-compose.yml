@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: darthman
+      POSTGRES_PASSWORD: darthman05
+      POSTGRES_DB: go_backend_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
