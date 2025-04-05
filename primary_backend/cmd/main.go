@@ -1,86 +1,88 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"primary_backend/cmd/handlers"
 
-	"github.com/google/uuid"
+	"github.com/gofiber/fiber/v2"
 )
+type ReadTask struct{
+	NAME string `json:"name"`
+}
 
 func main(){
+	app := fiber.New()
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
 	//connect db
-	db, err := handlers.DB_connect()
-	if err != nil {
-		log.Fatal("Error connecting to db")
-	} else {
-		fmt.Println("Connected to db")
-	}
+	db, _ := handlers.DB_connect()
+	
 
 	//create table
-	err = handlers.Create_table(db)
-	if err != nil {
-		log.Fatal("Error creating a table")
-	} else {
-		fmt.Println("Created the table")
-	}
+	handlers.Create_table(db)
+	
 
 	//create a task
-	resp,err := handlers.Create_task(db, "second task")
-	if err != nil {
-		log.Fatal("Error inserting data:", err)
-	} else {
-		fmt.Println("Task inserted successfully")
-	}
-	fmt.Println(resp)
+	app.Post("/create_task", func(c *fiber.Ctx) error {
+		task := new(handlers.Task)
+		err := c.BodyParser(task)
+		if err != nil {
+			return err
+		}
+		resp, err := handlers.Create_task(db, task.NAME)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Internal DB error")
+		} else {
+			return c.Send([]byte("Task added successfully " + resp.NAME))
+		}
+	})
+	
+	
 
 	//retrieve a task from db using it's name
-	task, err := handlers.Read_task(db, "first task")
-	if err != nil {
-		log.Fatal("Error retrieving data:", err)
-	} else {
-		fmt.Println("Task retrieved successfully")
-	}
-	fmt.Println(task)
+	app.Get("read_task", func(c * fiber.Ctx) error {
+		task := new(ReadTask)
+		err := c.BodyParser(task)
+		if err != nil{
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+		resp, err := handlers.Read_task(db, task.NAME)
+		if err != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		} else {
+			return c.JSON(resp)
+		}
+	})
 
-	//retrieve all the tasks
-	tasks, err := handlers.Read_tasks(db)
-	if err != nil {
-		log.Fatal("Error retrieving data:", err)
-	} else {
-		fmt.Println("Tasks retrieved successfully")
-	}
-	fmt.Println(tasks)
+	
 
-	//update a task with new values
-	UpdatedTask := handlers.Task{
-		ID: uuid.MustParse("c062c7e9-9c01-488a-9830-3f998ada1d56"),
-		NAME: "first task",
-		STATUS: true,
-	}
-	err = handlers.Update_task(db, UpdatedTask)
-	if err != nil {
-		log.Fatal("Error updating task", err)
-	} else {
-		fmt.Println("Successfully updated the task")
-	}
+	// //retrieve all the tasks
+	// handlers.Read_tasks(db)
+	
 
-	//delete a task using it's id
-	id := uuid.MustParse("c062c7e9-9c01-488a-9830-3f998ada1d56")
-	affectedRows, err1, err2 := handlers.Delete_task(db, id)
-	if affectedRows == 0 {
-		fmt.Println("No task found with the id ", id)
-	} else {
-		fmt.Println("Task deleted successfully")
+	// //update a task with new values
+	// UpdatedTask := handlers.Task{
+	// 	ID: uuid.MustParse("c062c7e9-9c01-488a-9830-3f998ada1d56"),
+	// 	NAME: "first task",
+	// 	STATUS: true,
+	// }
+	// handlers.Update_task(db, UpdatedTask)
+	
+
+	// //delete a task using it's id
+	// id := uuid.MustParse("c062c7e9-9c01-488a-9830-3f998ada1d56")
+	// handlers.Delete_task(db, id)
+
+	err := app.Listen(":6969")
+	if err != nil {
+		log.Fatal("Error listening on port 6969")
 	}
-	if err1 != nil {
-		log.Fatal("Error deleting the task", err)
-	} else {
-		fmt.Println("Successfully deleted the task")
-	}
-	if err2 != nil {
-		log.Fatal("Error fetching the affected rows", err)
-	} else {
-		fmt.Println("Successfully fetched the updated rows")
-	}
+	
 }
