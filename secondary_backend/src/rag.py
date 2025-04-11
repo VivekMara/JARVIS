@@ -131,3 +131,7 @@ def rag(question: str, n_points: int = 5) -> str:
     return query_deepseek(metaprompt)
 
 rag("where does the user live?")
+
+print("hello world")
+
+
