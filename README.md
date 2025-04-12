@@ -2,14 +2,14 @@
 
 ## **Features**
 1. Task Management
-
+more to come...
 ---
 ## **Tech Stack**
 | Component | Technology |
 |---|---|
-| **Frontend** | Next.js |
-| **Backend** | Go |
-| **Database** | PostgreSQL + ChromaDB |
+| **Frontend** | Typescript |
+| **Backend** | Python |
+| **Database** | PostgreSQL + Qdrant |
 | **Model** | Deepseek V3 |
 
 ---
