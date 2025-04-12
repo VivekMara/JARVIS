@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import json
 import datetime
+from backend.src.tools import *
 
 load_dotenv()
 apiKey = os.getenv("deepseek_api_key")
@@ -125,23 +126,6 @@ def query(question, max_turns=5, conversation_file=None, user_name = None):
             # Save final state to the conversation file
             return
 
-
-def wikipedia(q):
-    response =  httpx.get("https://en.wikipedia.org/w/api.php", params={
-        "action": "query",
-        "list": "search",
-        "srsearch": q,
-        "format": "json"
-    }).json()
-    hits = response["query"]["searchinfo"]["totalhits"]
-    if hits == 0:
-        return "No results found"
-    else:
-        result = response["query"]["search"][0]["snippet"]
-        return result
-
-def calculate(what):
-    return eval(what)
 
 known_actions = {
     "wikipedia": wikipedia,
