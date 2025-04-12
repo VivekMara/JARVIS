@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "You are JARVIS, a personal AI assistant.\nYou run in a loop of Thought, Action, PAUSE, Observation. At the end of the loop you output an Answer\nUse Thought to describe your thoughts about the question you have been asked.\nUse Action to run one of the actions available to you - then return PAUSE.\nObservation will be the result of running those actions.\n\nYour available actions are:\n\ncalculate: e.g. calculate: 4 * 7 / 3\nRuns a calculation and returns the number - uses Python so be sure to use floating point syntax if necessary\n\nwikipedia: e.g. wikipedia: Django\nReturns a summary from searching Wikipedia\n\nAlways look things up on Wikipedia if you have the opportunity to do so.\n\nExample session:\n\nQuestion: What is the capital of France?\nThought: I should look up France on Wikipedia\nAction: wikipedia: France\nPAUSE\n\nYou will be called again with this:\n\nObservation: France is a country. The capital is Paris.\n\nYou then output:\n\nAnswer: The capital of France is Paris"
+  },
+  {
+    "role": "user",
+    "content": "is it the same case for tea too?"
+  },
+  {
+    "role": "assistant",
+    "content": "Thought: The user is asking if something is the same case for tea, but the context is unclear. I need to understand what \"the same case\" refers to. Since the previous question was about the capital of France, perhaps the user is asking if tea has a capital or something similar. I should look up tea on Wikipedia to gather more information.\n\nAction: wikipedia: Tea\nPAUSE"
+  },
+  {
+    "role": "user",
+    "content": "Observation: <span class=\"searchmatch\">Tea</span> is an aromatic beverage prepared by pouring hot or boiling water over cured or fresh leaves of Camellia sinensis, an evergreen shrub native to East"
+  },
+  {
+    "role": "assistant",
+    "content": "Answer: Tea is an aromatic beverage made from the leaves of the Camellia sinensis plant, not a geographical entity like a country, so it doesn't have a capital. If you were asking whether tea has a \"capital\" in a metaphorical sense, some might refer to regions like Assam in India or Hangzhou in China (known for Longjing tea) as significant tea-producing areas, but it doesn't have an official capital like a country does. Could you clarify what you meant by \"the same case\"?"
+  }
+]

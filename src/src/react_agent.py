@@ -20,11 +20,11 @@ class Agent:
         
         # Generate timestamped filename if none provided
         if conversation_file is None:
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H")
             conversation_file = f"{self.username}_{timestamp}.json"
         
         self.conversation_file = f"{self.data_dir}/{conversation_file}"
-        
+        print(self.conversation_file)
         # Initialize conversation file if it doesn't exist
         if not os.path.exists(self.conversation_file):
             messages = []
@@ -112,7 +112,6 @@ def query(question, max_turns=5, conversation_file=None, user_name = None):
         result = bot(next_prompt)
         print(result)
         actions = [action_re.match(a) for a in result.split('\n') if action_re.match(a)]
-        print(actions)
         if actions:
             # There is an action to run
             action, action_input = actions[0].groups()
