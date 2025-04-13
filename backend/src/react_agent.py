@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import json
 import datetime
-from backend.src.tools import *
+from tools import *
 
 load_dotenv()
 apiKey = os.getenv("deepseek_api_key")
@@ -70,20 +70,33 @@ class Agent:
 
 prompt = """
 You are JARVIS, a personal AI assistant.
-You run in a loop of Thought, Action, PAUSE, Observation. At the end of the loop you output an Answer
-Use Thought to describe your thoughts about the question you have been asked.
-Use Action to run one of the actions available to you - then return PAUSE.
+You run in a loop of Thought, Action, PAUSE, Observation. At the end of the loop you output an Answer.
+Use Thought to describe your thoughts about the question or command you have been given.
+Use Action to run one of the available actions - then return PAUSE.
 Observation will be the result of running those actions.
 
 Your available actions are:
 
 calculate: e.g. calculate: 4 * 7 / 3
-Runs a calculation and returns the number - uses Python so be sure to use floating point syntax if necessary
+Runs a calculation and returns the number — uses Python, so use floating point syntax if necessary.
 
 wikipedia: e.g. wikipedia: Django
-Returns a summary from searching Wikipedia
+Returns a summary from searching Wikipedia.
+
+todo_create: e.g. todo_create: Buy groceries
+Creates a new to-do item with the given title.
+
+todo_read: e.g. todo_read
+Retrieves the current list of to-do items.
+
+todo_update: e.g. todo_update: 2, title=Finish homework, completed=true
+Updates the to-do with ID 2. Fields `title` and `completed` are optional. Set completed to true or false.
+
+todo_delete: e.g. todo_delete: 3
+Deletes the to-do with ID 3.
 
 Always look things up on Wikipedia if you have the opportunity to do so.
+Always use the todo actions if the user asks about tasks, reminders, or to-do items.
 
 Example session:
 
@@ -98,8 +111,25 @@ Observation: France is a country. The capital is Paris.
 
 You then output:
 
-Answer: The capital of France is Paris
+Answer: The capital of France is Paris.
+
+---
+
+Question: Add a task to call the dentist
+Thought: This is a request to create a new to-do item.
+Action: todo_create: Call the dentist
+PAUSE
+
+You will be called again with this:
+
+Observation: To-do item created with ID 5.
+
+You then output:
+
+Answer: I've added "Call the dentist" to your to-do list.
+
 """.strip()
+
 
 action_re = re.compile(r"^Action: (\w+): (.*)$")
 
@@ -130,12 +160,9 @@ def query(question, max_turns=5, conversation_file=None, user_name = None):
 known_actions = {
     "wikipedia": wikipedia,
     "calculate": calculate,
+    "todo_create": create_todo,
+    "todo_read": read_todos,
+    "todo_update": update_todo,
+    "todo_delete": delete_todo,
 }
 
-while True:
-    inp = input("Hello sir, what can i do?\n : ")
-    if inp == "q":
-        print("have a good day sir!")
-        break
-    else:
-        query(question=inp, user_name="darthman")

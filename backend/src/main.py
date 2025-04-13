@@ -4,8 +4,12 @@ import os
 import json
 from pathlib import Path
 import httpx
+from react_agent import query
 
-load_dotenv()
-apiKey = os.getenv("deepseek_api_key")
-
-client = OpenAI(api_key=apiKey, base_url="https://api.deepseek.com")
+while True:
+    inp = input("Hello sir, what can i do?\n : ")
+    if inp == "q":
+        print("have a good day sir!")
+        break
+    else:
+        query(question=inp, user_name="darthman")
