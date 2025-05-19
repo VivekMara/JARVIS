@@ -1,7 +1,7 @@
 services:
   jarvis-pg:
     image: postgres:latest
-    container_name: postgres
+    container_name: jarvis-pg
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -22,4 +22,4 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 6969:6969
