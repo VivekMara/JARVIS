@@ -1,5 +1,5 @@
 services:
-  db:
+  jarvis-pg:
     image: postgres:latest
     container_name: postgres
     restart: always
@@ -18,7 +18,7 @@ services:
       - ./data/db:/var/lib/postgresql/data
     attach: false
 
-  adminer:
+  jarvis-adminer:
     image: adminer
     restart: always
     ports:
