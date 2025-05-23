@@ -1,7 +1,15 @@
-syntax = "proto3"
+syntax = "proto3";
 
-package ai_agent
+package ai_agent;
 
 service Agent {
-    
+    rpc QueryDeepseek (Input) returns (Output);
+}
+
+message Input {
+    string query = 1;
+}
+
+message Output {
+    string response = 1;
 }

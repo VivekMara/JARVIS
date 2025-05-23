@@ -78,7 +78,7 @@ class MCPClient:
                         tool_name = tool_call.function.name
                         tool_args = json.loads(tool_call.function.arguments)
                         result = await self.session.call_tool(tool_name, tool_args)
-                        self.console.print(f"[Calling tool {tool_name} with args {tool_args}]")
+                        print(f"[Calling tool {tool_name} with args {tool_args}]")
                         msgs.append({
                             "role": "assistant",
                             "content": f"Action: {tool_name}({tool_args})\nPAUSE"

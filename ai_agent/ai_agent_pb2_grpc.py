@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import greeter_pb2 as greeter__pb2
+import ai_agent_pb2 as ai__agent__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
@@ -18,14 +18,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in greeter_pb2_grpc.py depends on'
+        + f' but the generated code in ai_agent_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class GreeterStub(object):
+class AgentStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -34,43 +34,43 @@ class GreeterStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SayHello = channel.unary_unary(
-                '/greeter.Greeter/SayHello',
-                request_serializer=greeter__pb2.HelloRequest.SerializeToString,
-                response_deserializer=greeter__pb2.HelloReply.FromString,
+        self.QueryDeepseek = channel.unary_unary(
+                '/ai_agent.Agent/QueryDeepseek',
+                request_serializer=ai__agent__pb2.Input.SerializeToString,
+                response_deserializer=ai__agent__pb2.Output.FromString,
                 _registered_method=True)
 
 
-class GreeterServicer(object):
+class AgentServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def SayHello(self, request, context):
+    def QueryDeepseek(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_GreeterServicer_to_server(servicer, server):
+def add_AgentServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SayHello': grpc.unary_unary_rpc_method_handler(
-                    servicer.SayHello,
-                    request_deserializer=greeter__pb2.HelloRequest.FromString,
-                    response_serializer=greeter__pb2.HelloReply.SerializeToString,
+            'QueryDeepseek': grpc.unary_unary_rpc_method_handler(
+                    servicer.QueryDeepseek,
+                    request_deserializer=ai__agent__pb2.Input.FromString,
+                    response_serializer=ai__agent__pb2.Output.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'greeter.Greeter', rpc_method_handlers)
+            'ai_agent.Agent', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('greeter.Greeter', rpc_method_handlers)
+    server.add_registered_method_handlers('ai_agent.Agent', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class Greeter(object):
+class Agent(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def SayHello(request,
+    def QueryDeepseek(request,
             target,
             options=(),
             channel_credentials=None,
@@ -83,9 +83,9 @@ class Greeter(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/greeter.Greeter/SayHello',
-            greeter__pb2.HelloRequest.SerializeToString,
-            greeter__pb2.HelloReply.FromString,
+            '/ai_agent.Agent/QueryDeepseek',
+            ai__agent__pb2.Input.SerializeToString,
+            ai__agent__pb2.Output.FromString,
             options,
             channel_credentials,
             insecure,
