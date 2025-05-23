@@ -1,16 +1,11 @@
 package main
 
 import (
-	"context"
 	"log"
-	"time"
 	"fmt"
 	"net/http"
 	"server/cmd/helpers"
 	"server/cmd/routes"
-
-	pb "server/greeterpb"
-	"google.golang.org/grpc"
 )
 
 func main() {
@@ -58,26 +53,9 @@ func main() {
 	http.HandleFunc("/auth/login", routes.Login)
 	http.HandleFunc("/auth/logout", routes.Logout)
 
+	http.HandleFunc("/query", routes.GrpcDeepseek)
+
 	//server
 	log.Println("Server starting on port 6969")
 	log.Fatal(http.ListenAndServe(":6969", nil))
-
-	// GRPC
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("Could not connect: %v", err)
-	}
-	defer conn.Close()
-
-	client := pb.NewGreeterClient(conn)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	res, err := client.SayHello(ctx, &pb.HelloRequest{Name: "Go Client"})
-	if err != nil {
-		log.Fatalf("Could not greet: %v", err)
-	}
-
-	log.Printf("Response from server: %s", res.Message)
 }

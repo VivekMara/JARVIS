@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package ai_agent;
+
+option go_package = "/proto/ai_agent";
+
+service Agent {
+    rpc QueryDeepseek (Input) returns (Output);
+}
+
+message Input {
+    string query = 1;
+}
+
+message Output {
+    string response = 1;
+}
