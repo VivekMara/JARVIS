@@ -37,14 +37,16 @@ func main() {
 	);
 	`
 	tables = append(tables, sessions_table)
-	err := helpers.Create_tables(tables)
+	dbpool, err := helpers.CreateTables(tables)
 	if err != nil {
 		err_stmt := fmt.Sprintf("Failed to create tables!! with error: %s", err)
 		log.Println(err_stmt)
 	} else {
 		log.Println("Database connection established and table created successfully")
 	}
-
+	helpers.Pool = dbpool
+	defer helpers.Pool.Close()
+	
 	//routes
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		resp := []byte("Hello Darthman")

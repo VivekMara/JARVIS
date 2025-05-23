@@ -1,17 +1,16 @@
 package routes
 
 import (
-	"database/sql"
+	"context"
 	"encoding/json"
+	"net"
 	"net/http"
-	"strings"
 	"server/cmd/helpers"
+	"strings"
 	"time"
-    "net"
 
-	_ "github.com/lib/pq"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-    "github.com/google/uuid"
 )
 
 type User struct {
@@ -22,7 +21,6 @@ type User struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
-var db *sql.DB
 
 func hash(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -67,7 +65,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
         UpdatedAt:    now,
     }
 
-    _, err = db.Exec(`INSERT INTO users 
+    _, err = helpers.Pool.Exec(context.Background(),`INSERT INTO users 
         (username, email, password_hash, created_at, updated_at) 
         VALUES ($1, $2, $3, $4, $5)`,
         user.Username, user.Email, user.PasswordHash, user.CreatedAt, user.UpdatedAt,
@@ -81,7 +79,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
         return
     }
     var userID int
-    row := db.QueryRow("SELECT id FROM users WHERE email = $1", user.Email)
+    row := helpers.Pool.QueryRow(context.Background(),"SELECT id FROM users WHERE email = $1", user.Email)
     err = row.Scan(&userID)
     if err != nil {
         helpers.SendErrorResponse(w, "Error scanning rows", err, http.StatusInternalServerError)
@@ -95,7 +93,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
     }
     user_agent := r.UserAgent()
     sessionID := uuid.New().String()
-    _, err = db.Exec("INSERT INTO sessions (session_id, user_id, created_at, expires_at, ip_address, user_agent) VALUES ($1, $2, $3, $4, $5, $6)",sessionID, userID, time.Now(), time.Now().Add(1*time.Hour), host, user_agent)
+    _, err = helpers.Pool.Exec(context.Background(),"INSERT INTO sessions (session_id, user_id, created_at, expires_at, ip_address, user_agent) VALUES ($1, $2, $3, $4, $5, $6)",sessionID, userID, time.Now(), time.Now().Add(1*time.Hour), host, user_agent)
     if err != nil {
         helpers.SendErrorResponse(w, "Error creating a session", err, http.StatusInternalServerError)
         return
@@ -116,7 +114,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
         helpers.SendErrorResponse(w, "Invalid http method", nil, http.StatusMethodNotAllowed)
     } else {
         var input struct {
-            Username string `json:"username"`
+            Email string `json:"email"`
             Password string `json:"password"`
         }
 
@@ -126,14 +124,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
             return
         }
 
-        if input.Username == "" || input.Password == "" {
+        if input.Email == "" || input.Password == "" {
             helpers.SendErrorResponse(w, "All fields are required", nil, http.StatusBadRequest)
             return
         }
 
         var hashedPass string
         var userID int
-        row := db.QueryRow("SELECT id, password_hash FROM users WHERE username = $1", input.Username)
+        row := helpers.Pool.QueryRow(context.Background(),"SELECT id, password_hash FROM users WHERE email = $1", input.Email)
         err = row.Scan(&userID, &hashedPass)
         if err != nil {
             helpers.SendErrorResponse(w, "Error scanning rows", err, http.StatusInternalServerError)
@@ -150,7 +148,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
             }
             user_agent := r.UserAgent()
             sessionID := uuid.New().String()
-            _, err = db.Exec("INSERT INTO sessions (session_id, user_id, created_at, expires_at, ip_address, user_agent) VALUES ($1, $2, $3, $4, $5, $6)",sessionID, userID, time.Now(), time.Now().Add(1*time.Hour), host, user_agent)
+            _, err = helpers.Pool.Exec(context.Background(),"INSERT INTO sessions (session_id, user_id, created_at, expires_at, ip_address, user_agent) VALUES ($1, $2, $3, $4, $5, $6)",sessionID, userID, time.Now(), time.Now().Add(1*time.Hour), host, user_agent)
             if err != nil {
                 helpers.SendErrorResponse(w, "Error creating a session", err, http.StatusInternalServerError)
                 return
@@ -174,7 +172,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
     } else {
         cookie, err := r.Cookie("session_id")
         if err == nil {
-        _, _ = db.Exec("DELETE FROM sessions WHERE session_id = $1", cookie.Value)
+        _, _ = helpers.Pool.Exec(context.Background(),"DELETE FROM sessions WHERE session_id = $1", cookie.Value)
         }
         http.SetCookie(w, &http.Cookie{
             Name:     "session_id",
