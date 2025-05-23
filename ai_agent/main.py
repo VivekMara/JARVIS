@@ -2,6 +2,7 @@ from concurrent import futures
 import grpc
 import greeter_pb2
 import greeter_pb2_grpc
+from src.mcp_client import MCPClient
 
 class GreeterServicer(greeter_pb2_grpc.GreeterServicer):
     def SayHello(self, request, context):
