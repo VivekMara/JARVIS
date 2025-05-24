@@ -2,13 +2,15 @@ package routes
 
 import (
 	"context"
-	"time"
-	"net/http"
 	"encoding/json"
+	"net/http"
+	"time"
 
-	agent "server/proto/ai_agent"
-	"google.golang.org/grpc"
 	"server/cmd/helpers"
+	agent "server/proto/ai_agent"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 
@@ -34,7 +36,7 @@ func GrpcDeepseek(w http.ResponseWriter, r *http.Request){
         return
     }
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		helpers.SendErrorResponse(w, "Could not connect to the grpc server", err, http.StatusInternalServerError)
 	}
@@ -42,7 +44,7 @@ func GrpcDeepseek(w http.ResponseWriter, r *http.Request){
 
 	client := agent.NewAgentClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
 	defer cancel()
 
 	res, err := client.QueryDeepseek(ctx, &agent.Input{Query: input.Query})

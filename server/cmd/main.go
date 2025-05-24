@@ -1,11 +1,15 @@
 package main
 
 import (
-	"log"
+	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"server/cmd/helpers"
 	"server/cmd/routes"
+	"time"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -41,19 +45,41 @@ func main() {
 	}
 	helpers.Pool = dbpool
 	defer helpers.Pool.Close()
+
+	var wait time.Duration
+	flag.DurationVar(&wait, "Graceful Shutdown", time.Second * 15, "the duration for which the server shutdowns")
+	flag.Parse()
+	
+	r := mux.NewRouter()
+
+	srv := &http.Server{
+		Addr: "0.0.0.0:8989",
+		WriteTimeout: time.Second * 15,
+        ReadTimeout:  time.Second * 15,
+        IdleTimeout:  time.Second * 60,
+		Handler: r,
+	}
+
+	go func() {
+        if err := srv.ListenAndServe(); err != nil {
+            log.Println(err)
+        }
+    }()
 	
 	//routes
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		resp := []byte("Hello Darthman")
 		w.Write(resp)
 	})
 
 	//auth
-	http.HandleFunc("/auth/register", routes.Register)
-	http.HandleFunc("/auth/login", routes.Login)
-	http.HandleFunc("/auth/logout", routes.Logout)
+	r.HandleFunc("/auth/register", routes.Register)
+	r.HandleFunc("/auth/login", routes.Login)
+	r.HandleFunc("/auth/logout", routes.Logout)
 
-	http.HandleFunc("/query", routes.GrpcDeepseek)
+	r.HandleFunc("/query", routes.GrpcDeepseek)
+
+	http.Handle("/", r)
 
 	//server
 	log.Println("Server starting on port 6969")

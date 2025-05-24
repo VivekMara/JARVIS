@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package ai_agent;
 
-option go_package = "/proto/ai_agent";
+option go_package = "/ai_agent";
 
 service Agent {
     rpc QueryDeepseek (Input) returns (Output);

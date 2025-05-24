@@ -1,7 +1,7 @@
 from concurrent import futures
 import grpc.aio
-import ai_agent_pb2_grpc
-import ai_agent_pb2
+from src.proto_files import ai_agent_pb2
+from src.proto_files import ai_agent_pb2_grpc
 from src.mcp_client import MCPClient
 import asyncio
     
