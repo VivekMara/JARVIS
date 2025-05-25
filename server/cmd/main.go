@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"server/cmd/helpers"
 	"server/cmd/routes"
 	"time"
@@ -53,7 +56,7 @@ func main() {
 	r := mux.NewRouter()
 
 	srv := &http.Server{
-		Addr: "0.0.0.0:8989",
+		Addr: "0.0.0.0:6969",
 		WriteTimeout: time.Second * 15,
         ReadTimeout:  time.Second * 15,
         IdleTimeout:  time.Second * 60,
@@ -65,6 +68,17 @@ func main() {
             log.Println(err)
         }
     }()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
+
+	ctx, cancel := context.WithTimeout(context.Background(),wait)
+	defer cancel()
+
+	srv.Shutdown(ctx)
+	log.Println("shutting down")
+	os.Exit(0)
 	
 	//routes
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -80,8 +94,4 @@ func main() {
 	r.HandleFunc("/query", routes.GrpcDeepseek)
 
 	http.Handle("/", r)
-
-	//server
-	log.Println("Server starting on port 6969")
-	log.Fatal(http.ListenAndServe(":6969", nil))
 }
